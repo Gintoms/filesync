@@ -1,0 +1,24 @@
+# Use http://hub-ip:8787 when the hub enables allow_http, or HTTPS with a certificate.
+hub = "http://127.0.0.1:8787"
+node_id = "replace-with-node-id"
+token_env = "FILESYNC_NODE_TOKEN"
+data_dir = "/absolute/path/to/filesync/agent"
+interval_seconds = 30
+# ca_cert = "/absolute/path/to/ca.pem"
+
+# Upstream only: select local content and a stable published prefix.
+# [[source]]
+# path = "/absolute/path/to/source"
+# prefix = "quotes"
+
+# Downstream only: claim a prefix including future files.
+# [[map]]
+# upstream = "replace-with-upstream-node-id"
+# from = "quotes/"
+# to = "/absolute/path/to/received/quotes"
+
+# Exact file mappings take priority over prefix mappings.
+# [[map]]
+# upstream = "replace-with-upstream-node-id"
+# from = "quotes/customer.pdf"
+# to = "/absolute/path/to/received/customer-quote.pdf"

@@ -1,0 +1,65 @@
+name: rust
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - run: npm ci --prefix ui
+      - run: npm run build --prefix ui
+      - run: npm test --prefix ui
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.98.1
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - run: cargo build --release --locked
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - run: node scripts/prepare-desktop.mjs
+      - run: cargo fmt --manifest-path ui/src-tauri/Cargo.toml --check
+      - run: cargo clippy --manifest-path ui/src-tauri/Cargo.toml --locked --all-targets -- -D warnings
+      - run: cargo test --manifest-path ui/src-tauri/Cargo.toml --locked
+      - if: runner.os == 'Linux'
+        run: npm --prefix ui run tauri -- build --no-bundle
+      - if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          export FILESYNC_CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+          sh scripts/build-desktop.sh --bundles app
+          app=ui/src-tauri/target/universal-apple-darwin/release/bundle/macos/FileSync.app
+          xcrun lipo "$app/Contents/MacOS/filesync-desktop" -verify_arch arm64 x86_64
+          xcrun lipo "$app/Contents/MacOS/filesync" -verify_arch arm64 x86_64
+          codesign --verify --deep --strict "$app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" FileSync-macos-universal.zip
+          python3 scripts/package-macos.py
+      - if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: filesync-macos-universal
+          path: |
+            FileSync-macos-universal.zip
+            ui/src-tauri/target/universal-apple-darwin/release/bundle/pkg/*.pkg
+            ui/src-tauri/target/universal-apple-darwin/release/bundle/pkg/*.sha256
+          if-no-files-found: error
+      - if: runner.os == 'Windows'
+        run: npm --prefix ui run tauri -- build --bundles nsis
+      - if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: filesync-windows-x64
+          path: ui/src-tauri/target/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error

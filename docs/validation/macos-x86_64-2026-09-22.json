@@ -1,0 +1,89 @@
+{
+  "platform": "macOS-26.6.1-x86_64-i386-64bit-Mach-O",
+  "machine": "x86_64",
+  "binary_sha256": "733f8331b16740fda15fa8439f7e16fec71a0360fd25ba960b65a516a974fa68",
+  "workload": {
+    "small_files": 20000,
+    "large_file_bytes": 99000000,
+    "small_file_bytes": 64,
+    "transport": "HTTPS loopback with certificate verification",
+    "transfer_concurrency": 1,
+    "claimed_files": 1,
+    "unclaimed_small_files": 20000
+  },
+  "limit_bytes": 20000000,
+  "complete_memory_acceptance": false,
+  "limitations": [
+    "agent --once, not long-lived daemon",
+    "sequential scan and transfer",
+    "single OS",
+    "no 1-hour idle or long-running growth test"
+  ],
+  "runs": [
+    {
+      "name": "initial_publish",
+      "peak_rss_bytes": 8704000,
+      "peak_mb": 8.704,
+      "peak_mib": 8.301,
+      "under_limit": true,
+      "elapsed_seconds": 5.364,
+      "summary": {
+        "scanned": 20001,
+        "published": 2,
+        "pending": 0,
+        "downloaded": 0,
+        "unchanged": 0,
+        "failed": 0
+      }
+    },
+    {
+      "name": "pending_no_download",
+      "peak_rss_bytes": 6832128,
+      "peak_mb": 6.832,
+      "peak_mib": 6.516,
+      "under_limit": true,
+      "elapsed_seconds": 6.997,
+      "summary": {
+        "scanned": 0,
+        "published": 0,
+        "pending": 20001,
+        "downloaded": 0,
+        "unchanged": 0,
+        "failed": 0
+      }
+    },
+    {
+      "name": "claimed_large_download",
+      "peak_rss_bytes": 7471104,
+      "peak_mb": 7.471,
+      "peak_mib": 7.125,
+      "under_limit": true,
+      "elapsed_seconds": 7.459,
+      "summary": {
+        "scanned": 0,
+        "published": 0,
+        "pending": 20000,
+        "downloaded": 1,
+        "unchanged": 0,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unchanged_publish",
+      "peak_rss_bytes": 7401472,
+      "peak_mb": 7.401,
+      "peak_mib": 7.059,
+      "under_limit": true,
+      "elapsed_seconds": 4.208,
+      "summary": {
+        "scanned": 20001,
+        "published": 0,
+        "pending": 0,
+        "downloaded": 0,
+        "unchanged": 0,
+        "failed": 0
+      }
+    }
+  ],
+  "hash_verified": true
+}

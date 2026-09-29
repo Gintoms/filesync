@@ -1,0 +1,15 @@
+services:
+  hub:
+    image: filesync:0.1.0
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      FILESYNC_ADMIN_TOKEN: ${FILESYNC_ADMIN_TOKEN:?Set FILESYNC_ADMIN_TOKEN to a random token of at least 32 characters}
+    volumes:
+      - hub-data:/data
+    stop_grace_period: 30s
+
+volumes:
+  hub-data:

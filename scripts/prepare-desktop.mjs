@@ -1,0 +1,13 @@
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, copyFileSync, chmodSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const host=process.argv[2] ?? execFileSync('rustc',['+1.98.1','-vV'],{encoding:'utf8'}).match(/^host: (.+)$/m)[1];
+if(!/^[a-zA-Z0-9_-]+$/.test(host)) throw new Error('Invalid target triple');
+const ext=host.includes('windows')?'.exe':'';
+const dir=resolve(root,'ui/src-tauri/binaries');mkdirSync(dir,{recursive:true});
+const target=resolve(dir,`filesync-${host}${ext}`);
+const buildRoot=process.env.CARGO_TARGET_DIR ? resolve(process.env.CARGO_TARGET_DIR) : resolve(root,'target');
+copyFileSync(resolve(buildRoot,process.argv[2]?`${host}/release/filesync${ext}`:`release/filesync${ext}`),target);chmodSync(target,0o755);
+console.log(`Prepared desktop background binary for ${host}`);

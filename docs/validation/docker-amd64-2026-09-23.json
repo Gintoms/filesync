@@ -1,0 +1,1 @@
+{"image": "private registry image (redacted)", "http": "passed", "web_assets": 2, "authentication": "passed", "non_root": "passed", "volume_persistence": "passed", "graceful_stop": "passed", "file_upload_download_after_recreate": "passed", "node_deletion": "passed"}

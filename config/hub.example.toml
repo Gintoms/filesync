@@ -1,0 +1,12 @@
+# Copy to hub.toml and choose a private absolute data directory.
+listen = "127.0.0.1:8787"
+data_dir = "/absolute/path/to/filesync/hub"
+admin_token_env = "FILESYNC_ADMIN_TOKEN"
+
+# For network HTTP, set listen = "0.0.0.0:8787" and uncomment allow_http.
+# Tokens and file contents travel unencrypted over HTTP.
+# allow_http = true
+
+# Alternatively, configure both certificate and key to serve HTTPS.
+# tls_cert = "/absolute/path/to/server.pem"
+# tls_key = "/absolute/path/to/server.key"
